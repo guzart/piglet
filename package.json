@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "next build",
+    "deploy": "now --public",
     "dev": "ts-node server.ts",
-    "start": "next start -p $PORT"
+    "start": "next start -p 8000"
   },
   "dependencies": {
     "@zeit/next-sass": "^0.1.1",
