@@ -1,0 +1,38 @@
+.IndexPage {
+  h1,
+  a {
+    font-family: 'Arial';
+  }
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    list-style: none;
+    margin: 5px 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: blue;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  .PostLink {
+    list-style: none;
+    margin: 5px 0;
+
+    a {
+      color: blue;
+      font-family: 'Arial';
+      text-decoration: none;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+}
