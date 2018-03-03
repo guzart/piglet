@@ -7,7 +7,7 @@
     "build": "next build",
     "deploy": "now --public",
     "dev": "ts-node server.ts",
-    "guard": "concurrently 'tsc -m commonjs --watch' 'ava --watch'",
+    "guard": "concurrently -k -n 'TSC,AVA' 'tsc -m commonjs --watch' 'ava --watch'",
     "start": "next start -p 8000",
     "test": "tsc -m commonjs && ava"
   },
@@ -19,7 +19,6 @@
     "koa-router": "^7.4.0",
     "next": "5.0.1-canary.10",
     "node-sass": "^4.7.2",
-    "ramda": "^0.25.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "typescript": "^2.7.2"
@@ -29,10 +28,15 @@
     "@types/react": "^16.0.40",
     "ava": "^0.25.0",
     "concurrently": "^3.5.1",
+    "ts-node": "^5.0.1",
     "tsconfig-paths": "^3.1.1"
   },
   "ava": {
-    "files": [".tsout/**/*.test.js"],
-    "require": ["tsconfig-paths/register"]
+    "files": [
+      ".tsout/**/*.test.js"
+    ],
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }

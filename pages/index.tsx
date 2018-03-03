@@ -1,3 +1,4 @@
+import * as React from 'react'
 import Link from 'next/link'
 import Layout from '../components/Layout'
 import './index.scss'
@@ -23,11 +24,15 @@ const PostLink = ({ post }: { post: Post }) => (
   </li>
 )
 
-const IndexPage = () => (
-  <Layout className="IndexPage">
-    <h1>My Blog</h1>
-    <ul>{getPosts().map(post => <PostLink key={post.id} post={post} />)}</ul>
-  </Layout>
-)
-
-export default IndexPage
+export default class IndexPage extends React.Component {
+  render() {
+    return (
+      <Layout className="IndexPage">
+        <h1>My Blog</h1>
+        <ul>
+          {getPosts().map(post => <PostLink key={post.id} post={post} />)}
+        </ul>
+      </Layout>
+    )
+  }
+}

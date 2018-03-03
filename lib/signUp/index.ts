@@ -13,8 +13,12 @@ function isEmailAlreadyRegistered(_email: string) {
   return false
 }
 
-function isInvalidEmail(_email: string): boolean {
-  return true
+const EMAIL_REGEXP = new RegExp(
+  "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+)
+
+function isInvalidEmail(email: string): boolean {
+  return EMAIL_REGEXP.test(email)
 }
 
 export function emailSignUp(info: EmailSignUp): Result<User, ValidationError> {
