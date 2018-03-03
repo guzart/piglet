@@ -7,7 +7,9 @@
     "build": "next build",
     "deploy": "now --public",
     "dev": "ts-node server.ts",
-    "start": "next start -p 8000"
+    "guard": "concurrently 'tsc --watch' 'ava --watch'",
+    "start": "next start -p 8000",
+    "test": "tsc && ava"
   },
   "dependencies": {
     "@zeit/next-sass": "^0.1.1",
@@ -25,6 +27,10 @@
   "devDependencies": {
     "@types/node": "^9.4.6",
     "@types/react": "^16.0.40",
-    "ts-node": "^5.0.1"
+    "ava": "^0.25.0",
+    "concurrently": "^3.5.1"
+  },
+  "ava": {
+    "files": [".ts/**/*.test.js"]
   }
 }
