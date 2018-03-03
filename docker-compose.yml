@@ -1,0 +1,9 @@
+version: '3'
+services:
+  db:
+    image: postgres:10.3-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: piglet
+    ports:
+      - "5432:5432"
