@@ -1,4 +1,4 @@
-type ValidationErrors = { [key: string]: string[] }
+export type ValidationErrors = { [key: string]: string[] }
 
 export default class ValidationError extends Error {
   errors: ValidationErrors

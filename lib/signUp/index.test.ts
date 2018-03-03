@@ -1,20 +1,23 @@
 import test from 'ava'
-import SuccessResult from '@lib/shared/SuccessResult'
 import { emailSignUp } from './index'
-import ErrorResult from '@lib/shared/ErrorResult'
+
+const validEmail = 'hello@example.com'
+const validPassword = 'asdfasdf'
 
 test('user signs up using email and password', t => {
-  const result = emailSignUp({ email: 'hello@example.com', password: 'asdf' })
-  t.true(result instanceof SuccessResult)
+  t.true(emailSignUp({ email: validEmail, password: validPassword }).isSuccess)
 })
 
 test('user sign up fails if email is invalid', t => {
-  const result = emailSignUp({ email: 'hello', password: 'asdf' })
-  t.true(result instanceof ErrorResult)
+  t.true(emailSignUp({ email: 'hello', password: validPassword }).isFailure)
+})
+
+test('user sign up fails if password is too short', t => {
+  t.true(emailSignUp({ email: validEmail, password: '1234567' }).isFailure)
+  t.true(emailSignUp({ email: validEmail, password: '12345678' }).isSuccess)
 })
 
 test('user sign up fails if email is already registered', t => {
   const email = 'hello@example.com'
-  const result = emailSignUp({ email, password: 'asdf' })
-  t.true(result instanceof ErrorResult)
+  t.true(emailSignUp({ email, password: validPassword }).isFailure)
 })

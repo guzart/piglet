@@ -6,4 +6,12 @@ export default class Result<R = {}, E = Error> {
     this.result = result
     this.error = error
   }
+
+  get isFailure() {
+    return this.error != null
+  }
+
+  get isSuccess() {
+    return !this.isFailure
+  }
 }
