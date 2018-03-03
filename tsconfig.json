@@ -12,7 +12,10 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "outDir": ".ts",
+    "outDir": ".tsout",
+    "paths": {
+      "@lib/*": ["./lib/*", "./.tsout/lib/*"]
+    },
     "preserveConstEnums": true,
     "removeComments": false,
     "skipLibCheck": false,

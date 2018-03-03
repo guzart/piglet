@@ -1,8 +1,8 @@
-import ErrorResult from 'lib/shared/ErrorResult'
-import Result from 'lib/shared/Result'
-import ValidationError from 'lib/shared/ValidationError'
+import ErrorResult from '@lib/shared/ErrorResult'
+import Result from '@lib/shared/Result'
+import ValidationError from '@lib/shared/ValidationError'
 import User from './User'
-import SuccessResult from 'lib/shared/SuccessResult'
+import SuccessResult from '@lib/shared/SuccessResult'
 
 export interface EmailSignUp {
   email: string
@@ -13,12 +13,12 @@ function isEmailAlreadyRegistered(_email: string) {
   return false
 }
 
-function isValidEmail(_email: string): boolean {
+function isInvalidEmail(_email: string): boolean {
   return true
 }
 
 export function emailSignUp(info: EmailSignUp): Result<User, ValidationError> {
-  if (isValidEmail(info.email)) {
+  if (!isInvalidEmail(info.email)) {
     return new ErrorResult(new ValidationError({ email: ['is invalid'] }))
   }
 
