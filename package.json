@@ -14,6 +14,7 @@
   "dependencies": {
     "@zeit/next-sass": "^0.1.1",
     "@zeit/next-typescript": "^0.0.10",
+    "folktale": "^3.0.1-ts",
     "isomorphic-unfetch": "^2.0.0",
     "koa": "^2.5.0",
     "koa-router": "^7.4.0",

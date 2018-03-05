@@ -1,59 +1,43 @@
-import Result from '@lib/shared/Result'
-import ValidationError from '@lib/shared/ValidationError'
-import User from './User'
-import SuccessResult from '@lib/shared/SuccessResult'
-import ValidationResult from '@lib/shared/ValidationResult'
+import { validation, result } from 'folktale'
+import { validEmail, minLength, notEmpty } from '@lib/shared/validations/index'
+
+const { Success } = validation
 
 export interface EmailSignUp {
   email: string
   password: string
 }
 
-const EMAIL_REGEXP = new RegExp(
-  "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-)
+type ValidationTuple<T> = [keyof T, string[]]
 
-function isEmailAlreadyRegistered(_email: string) {
-  return false
+type EmailSignUpValidation = ValidationTuple<EmailSignUp>[]
+
+const isValidEmail = (email: string) =>
+  Success<string[], string>(email)
+    .concat(notEmpty(email))
+    .concat(validEmail(email))
+    .mapFailure<EmailSignUpValidation>(f => [['email', f]])
+
+const isValidPassword = (password: string) =>
+  Success<string[], string>(password)
+    .concat(notEmpty(password))
+    .concat(minLength(8, password))
+    .mapFailure<EmailSignUpValidation>(f => [['password', f]])
+
+const canRegisterEmail = (_email: string) => {
+  // return result.Error<EmailSignUpValidation, string>([
+  //   [emailKey, ['is already in use']]
+  // ])
+  // TODO: Use Reader monad for repo access
+  return result.Ok<EmailSignUpValidation, string>(_email)
 }
 
-function isInvalidEmail(email: string): boolean {
-  return EMAIL_REGEXP.test(email)
-}
-
-function validatePassword(password: string) {
-  if (password.length < 8) {
-    return new ValidationResult({
-      password: ['must be at least 8 characters long']
-    })
-  }
-
-  return new ValidationResult()
-}
-
-function validateEmail(email: string) {
-  if (!isInvalidEmail(email)) {
-    return new ValidationResult({ email: ['is invalid'] })
-  }
-
-  if (isEmailAlreadyRegistered(email)) {
-    return new ValidationResult({ email: ['is already registered'] })
-  }
-
-  return new ValidationResult()
-}
-
-export function emailSignUp(info: EmailSignUp): Result<User, ValidationError> {
-  const validationResult = validateEmail(info.email).merge(
-    validatePassword(info.password)
-  )
-
-  if (validationResult.isFailure) {
-    return validationResult
-  }
-
-  return new SuccessResult(new User())
-}
+export const emailSignUp = (info: EmailSignUp) =>
+  isValidEmail(info.email)
+    .concat(isValidPassword(info.password))
+    .toResult()
+    .chain<string>(canRegisterEmail)
+    .map(_ => info)
 
 // export interface GoogleSignUp {
 //   email: string
