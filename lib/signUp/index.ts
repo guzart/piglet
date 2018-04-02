@@ -1,46 +1,53 @@
-import { validation, result } from 'folktale'
-import { validEmail, minLength, notEmpty } from '@lib/shared/validations/index'
-
-const { Success } = validation
+import { result, validation } from 'folktale'
+import {
+  validEmail,
+  minLength,
+  notEmpty,
+  ValidationTuple,
+  Validator
+} from '@lib/shared/validations/index'
 
 export interface EmailSignUp {
   email: string
   password: string
 }
 
-type ValidationTuple<T> = [keyof T, string[]]
+type EmailSignUpValidation = ValidationTuple<EmailSignUp>
 
-type EmailSignUpValidation = ValidationTuple<EmailSignUp>[]
-
-const isValidEmail = (email: string) =>
-  Success<string[], string>(email)
+const isValidEmail: Validator<string> = (email: string) =>
+  validation
+    .of<string[], string>(email)
     .concat(notEmpty(email))
     .concat(validEmail(email))
-    .mapFailure<EmailSignUpValidation>(f => [['email', f]])
 
-const isValidPassword = (password: string) =>
-  Success<string[], string>(password)
+const isValidPassword: Validator<string> = (password: string) =>
+  validation
+    .of<string[], string>(password)
     .concat(notEmpty(password))
-    .concat(minLength(8, password))
-    .mapFailure<EmailSignUpValidation>(f => [['password', f]])
+    .concat(minLength(8)(password))
 
-const canRegisterEmail = (_email: string) => {
-  // return result.Error<EmailSignUpValidation, string>([
-  //   [emailKey, ['is already in use']]
-  // ])
-  // TODO: Use Reader monad for repo access
-  return result.Ok<EmailSignUpValidation, string>(_email)
-}
+const canRegisterEmail = (email: string) => (
+  emailAlreadyRegistered: (_: string) => Promise<boolean>
+) =>
+  emailAlreadyRegistered(email)
+    ? result.Error<EmailSignUpValidation[], string>([
+        ['email', ['is already in use']]
+      ])
+    : result.Ok<EmailSignUpValidation[], string>(email)
 
-export const emailSignUp = (info: EmailSignUp) =>
-  isValidEmail(info.email)
-    .concat(isValidPassword(info.password))
+// TODO: Extract the key tuples boxing to a function
+export const emailSignUp = (emailSignup: EmailSignUp) =>
+  validation
+    .of<EmailSignUpValidation[], EmailSignUp>(emailSignup)
+    .concat(
+      isValidEmail(emailSignup.email).mapFailure<EmailSignUpValidation[]>(f => [
+        ['email', f]
+      ])
+    )
+    .concat(
+      isValidPassword(emailSignup.password).mapFailure<EmailSignUpValidation[]>(
+        f => [['password', f]]
+      )
+    )
     .toResult()
-    .chain<string>(canRegisterEmail)
-    .map(_ => info)
-
-// export interface GoogleSignUp {
-//   email: string
-//   idToken: string
-// }
-// export function googleSignUp(info: GoogleSignUp): Result<User> {}
+    .map(canRegisterEmail)

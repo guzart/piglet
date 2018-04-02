@@ -1,6 +1,6 @@
 import test from 'ava'
-import { emailSignUp } from './index'
 import { Result, maybe } from 'folktale'
+import { emailSignUp } from './index'
 
 const validEmail = 'hello@example.com'
 const validPassword = 'asdfasdf'
@@ -9,13 +9,13 @@ const isFailure = (v: Result<any, any>) => v.toMaybe().equals(maybe.Nothing())
 const isSuccess = (v: Result<any, any>) => !isFailure(v)
 
 test('user signs up using email and password', t => {
-  const result = emailSignUp({ email: validEmail, password: validPassword })
-  t.true(isSuccess(result))
+  const out = emailSignUp({ email: validEmail, password: validPassword })
+  t.true(isSuccess(out))
 })
 
 test('user sign up fails if email is invalid', t => {
-  const result = emailSignUp({ email: 'hello', password: validPassword })
-  t.true(isFailure(result))
+  const out = emailSignUp({ email: 'hello', password: validPassword })
+  t.true(isFailure(out))
 })
 
 test('user sign up fails if password is too short', t => {
@@ -24,6 +24,9 @@ test('user sign up fails if password is too short', t => {
 })
 
 // test('user sign up fails if email is already registered', t => {
-//   const email = 'hello@example.com'
-//   t.true(isFailure(emailSignUp({ email, password: validPassword })))
+//   const emailAlreadyRegistered = (_: string) => Promise.resolve(true)
+//   const out = emailSignUp({ email: validEmail, password: validPassword }).chain(
+//     v => v(emailAlreadyRegistered)
+//   )
+//   t.true(isFailure(out))
 // })
